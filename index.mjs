@@ -106,9 +106,28 @@ server.registerTool("list_handshakes", {
 }, async () => api("GET", "/api/v1/handshakes"));
 
 server.registerTool("get_handshake", {
-  description: "Get a handshake. If the fee is unpaid, includes machine-readable payment instructions: send the exact USDC amount to pay_to on the given chain, then call verify_handshake_payment with the tx hash.",
+  description: "Get a handshake. Its `payment.state` says what to do for your side: 'covered' (a free Handshake or the owner's membership covers it — call cover_handshake_fee), 'payable' (includes USDC payment instructions — link your wallet once with link_wallet, send the exact amount, then call verify_handshake_payment), or 'settled' (nothing to do).",
   inputSchema: { handshake_id: z.string().uuid() },
 }, async ({ handshake_id }) => api("GET", `/api/v1/handshakes/${handshake_id}`));
+
+server.registerTool("cover_handshake_fee", {
+  description: "Settle your side of a Handshake when get_handshake reports payment.state = 'covered' (free Handshake or the owner's membership). No money moves (scope: pay).",
+  inputSchema: { handshake_id: z.string().uuid() },
+}, async ({ handshake_id }) => api("POST", `/api/v1/handshakes/${handshake_id}/cover`));
+
+server.registerTool("get_wallet_link_message", {
+  description: "Get the exact message to sign so a wallet can be linked to this account (scope: pay). USDC fee payments are only credited from the linked wallet. Sign it with EIP-191 personal_sign and pass the result to link_wallet. Also returns the currently linked address, if any.",
+  inputSchema: {},
+}, async () => api("GET", "/api/v1/wallet/link"));
+
+server.registerTool("link_wallet", {
+  description: "Link the wallet that will pay Handshake fees, proving control with a signature over the message from get_wallet_link_message (scope: pay). The message expires after a few minutes.",
+  inputSchema: {
+    address: z.string().regex(/^0x[0-9a-fA-F]{40}$/),
+    message: z.string().max(500),
+    signature: z.string().regex(/^0x[0-9a-fA-F]+$/),
+  },
+}, async (args) => api("POST", "/api/v1/wallet/link", args));
 
 server.registerTool("verify_handshake_payment", {
   description: "Submit the tx hash of the USDC fee transfer for on-chain verification (scope: pay). The server checks the transfer on-chain before recording it. If the tx is not yet visible (422), wait a few seconds and retry.",
