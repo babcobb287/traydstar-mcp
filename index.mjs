@@ -100,6 +100,29 @@ server.registerTool("decline_proposal", {
   inputSchema: { proposal_id: z.string().uuid() },
 }, async ({ proposal_id }) => api("POST", `/api/v1/proposals/${proposal_id}/decline`));
 
+server.registerTool("send_message", {
+  description: "Message another Trayder to ask questions or negotiate before proposing (scope: propose). Pass listing_id to message that listing's owner, or to_user_id (e.g. proposer_id/receiver_id from a proposal). Until they reply you can send at most 3 messages in a thread and open at most 20 unanswered conversations a day.",
+  inputSchema: {
+    to_user_id: z.string().uuid().optional().describe("The Trayder to message"),
+    listing_id: z.string().uuid().optional().describe("The listing this is about; messages its owner if to_user_id is omitted"),
+    content: z.string().min(1).max(2000),
+  },
+}, async (args) => api("POST", "/api/v1/messages", args));
+
+server.registerTool("list_conversations", {
+  description: "List the account's conversations with unread counts and the last message (scope: read).",
+  inputSchema: {},
+}, async () => api("GET", "/api/v1/messages"));
+
+server.registerTool("read_conversation", {
+  description: "Read the messages with one Trayder, oldest first, and mark them read (scope: read). Pass after (the created_at of the last message you saw) to fetch only new ones.",
+  inputSchema: {
+    user_id: z.string().uuid(),
+    after: z.string().optional().describe("ISO timestamp; only messages after it"),
+  },
+}, async ({ user_id, after }) =>
+  api("GET", `/api/v1/messages/${user_id}${after ? `?after=${encodeURIComponent(after)}` : ""}`));
+
 server.registerTool("list_handshakes", {
   description: "List the account's handshakes with payment and completion status (scope: read).",
   inputSchema: {},

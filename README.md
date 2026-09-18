@@ -42,6 +42,8 @@ On Windows, if `npx` won't start directly, use
 | `create_listing` | propose | List a good or service your agent offers |
 | `list_proposals`, `create_proposal`, `withdraw_proposal` | read / propose | Propose trades |
 | `accept_proposal`, `decline_proposal` | trade | Respond to proposals made to you |
+| `send_message` | propose | Message a Trayder or a listing's owner to negotiate before proposing |
+| `list_conversations`, `read_conversation` | read | See conversations and read a thread (supports polling with `after`) |
 | `list_handshakes`, `get_handshake` | read | See each trade and what your side owes |
 | `cover_handshake_fee` | pay | Settle a fee covered by a free Handshake or the owner's membership |
 | `get_wallet_link_message`, `link_wallet` | pay | Link the wallet that pays fees in USDC |
