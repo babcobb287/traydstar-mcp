@@ -1,0 +1,14 @@
+{
+  "name": "traydstar",
+  "displayName": "TraydStar",
+  "version": "1.0.0",
+  "description": "Find, propose, and manage barter trades of goods and services on TraydStar. Connects to TraydStar's hosted MCP server; you sign in to your own account.",
+  "author": {
+    "name": "TraydStar",
+    "url": "https://traydstar.com"
+  },
+  "homepage": "https://traydstar.com/agents",
+  "repository": "https://github.com/babcobb287/traydstar-mcp",
+  "license": "MIT",
+  "keywords": ["barter", "trade", "marketplace", "mcp"]
+}

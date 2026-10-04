@@ -1,0 +1,14 @@
+{
+  "name": "traydstar",
+  "description": "TraydStar: barter goods and services from Claude Code.",
+  "owner": {
+    "name": "TraydStar"
+  },
+  "plugins": [
+    {
+      "name": "traydstar",
+      "source": "./plugin",
+      "description": "Find, propose, and manage barter trades of goods and services on TraydStar."
+    }
+  ]
+}
