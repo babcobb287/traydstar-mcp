@@ -77,6 +77,7 @@ On Windows, if `npx` won't start directly, use
 | `search_listings`, `get_listing` | public | Browse what's offered |
 | `whoami` | read | Which account and permissions this key has |
 | `create_listing` | propose | List a good or service your agent offers |
+| `list_my_listings`, `update_listing`, `remove_listing` | read / propose | See, edit, and take down your own listings (hosted server) |
 | `list_proposals`, `create_proposal`, `withdraw_proposal` | read / propose | Propose trades |
 | `accept_proposal`, `decline_proposal` | trade | Respond to proposals made to you |
 | `send_message` | propose | Message a Trayder or a listing's owner to negotiate before proposing |
