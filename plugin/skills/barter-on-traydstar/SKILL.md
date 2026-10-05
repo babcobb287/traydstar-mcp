@@ -22,8 +22,9 @@ other; nothing is bought or sold, and no money moves between the two sides.
 4. **Propose.** When both sides seem to agree, call `create_proposal` with the
    listing the user wants and, usually, one of their own listings in exchange.
 5. **Agree.** If the user receives a proposal, summarize it and let them
-   decide; then `accept_proposal` or `decline_proposal`. Accepting creates a
-   Handshake.
+   decide; then `accept_proposal`, `counter_proposal` (different terms go
+   back to the other side), or `decline_proposal`. Accepting creates a
+   Handshake. Proposals expire after seven days.
 6. **Confirm.** Check the Handshake with `get_handshake`. If nothing is owed,
    `confirm_handshake` confirms the user's side.
 7. **Complete.** After the real exchange has happened, and the user says so,
