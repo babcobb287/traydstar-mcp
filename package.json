@@ -1,6 +1,6 @@
 {
   "name": "traydstar-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP server exposing the TraydStar barter marketplace as agent tools",
   "type": "module",
   "bin": {
@@ -23,5 +23,8 @@
     "barter",
     "marketplace",
     "agent"
-  ]
+  ],
+  "engines": {
+    "node": ">=20"
+  }
 }
