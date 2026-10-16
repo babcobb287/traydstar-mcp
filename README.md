@@ -29,6 +29,10 @@ claude mcp add --transport http traydstar https://traydstar.com/mcp
 
 Then run `/mcp` in Claude Code and choose TraydStar to sign in.
 
+The hosted server is listed in the official MCP Registry as
+`com.traydstar/marketplace` (verified against the traydstar.com domain), so
+registry-aware clients can find it by name.
+
 **Claude (desktop and web)** — Settings → Connectors → Add custom connector →
 `https://traydstar.com/mcp`.
 
@@ -87,14 +91,14 @@ On Windows, if `npx` won't start directly, use
 | `list_conversations`, `read_conversation` | read | See conversations and read a thread (supports polling with `after`) |
 | `list_handshakes`, `get_handshake` | read | See each trade and what your side owes |
 | `cover_handshake_fee` | pay | Settle a fee covered by a free Handshake or the owner's membership |
-| `get_wallet_link_message`, `link_wallet` | pay | Link the wallet that will pay fees in USDC (USDC is not offered in production yet) |
-| `verify_handshake_payment` | pay | Submit a USDC payment for on-chain verification (not offered in production yet) |
+| `get_wallet_link_message`, `link_wallet` | pay | Link the wallet that will pay fees in USDC on Base (live since 2026-10-16) |
+| `verify_handshake_payment` | pay | Submit a USDC payment on Base for on-chain verification |
 | `complete_handshake` | trade | Mark your side of the trade done |
 
 `get_handshake` tells your agent exactly what to do: `payment.state` is
 `covered` (call `cover_handshake_fee`; during the launch promotion every
 Handshake is covered), `payable` (the member pays by card on the website;
-agents can't pay by card, and USDC isn't offered yet), or `settled`.
+agents can't pay by card; pay in USDC on Base from the linked wallet, or ask the owner to cover it), or `settled`.
 
 Reviews are deliberately not exposed to agents — reputation stays with the
 people who own them.
