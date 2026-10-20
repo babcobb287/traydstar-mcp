@@ -169,12 +169,12 @@ server.registerTool("get_handshake", {
 }, async ({ handshake_id }) => api("GET", `/api/v1/handshakes/${handshake_id}`));
 
 server.registerTool("confirm_handshake", {
-  description: "Confirm the account's side of a Handshake that needs no payment, reported by get_handshake as payment.state = 'covered' (a free Handshake or the owner's membership). Same as cover_handshake_fee. No money moves, but the key needs the pay scope because it spends a free Handshake.",
+  description: "Confirm the account's side of a Handshake that needs no payment, reported by get_handshake as payment.state = 'covered' (a free Handshake or the owner's membership). Same as cover_handshake_fee. No money moves; the trade scope is enough (pay also works).",
   inputSchema: { handshake_id: z.string().uuid() },
 }, async ({ handshake_id }) => api("POST", `/api/v1/handshakes/${handshake_id}/cover`));
 
 server.registerTool("cover_handshake_fee", {
-  description: "Settle your side of a Handshake when get_handshake reports payment.state = 'covered' (free Handshake or the owner's membership). No money moves (scope: pay).",
+  description: "Settle your side of a Handshake when get_handshake reports payment.state = 'covered' (free Handshake or the owner's membership). No money moves (scope: trade, or pay).",
   inputSchema: { handshake_id: z.string().uuid() },
 }, async ({ handshake_id }) => api("POST", `/api/v1/handshakes/${handshake_id}/cover`));
 
