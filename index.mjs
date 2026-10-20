@@ -3,7 +3,7 @@
 // other MCP clients can browse, propose, and trade on TraydStar.
 //
 // Config (env):
-//   TRAYDSTAR_API_KEY  - agent key (tsk_...), minted at POST /api/agent-keys
+//   TRAYDSTAR_API_KEY  - agent key (tsk_...), created at traydstar.com → Settings → Your agents
 //   TRAYDSTAR_API_URL  - base URL, default https://traydstar.com
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
