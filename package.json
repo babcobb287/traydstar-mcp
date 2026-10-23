@@ -1,6 +1,6 @@
 {
   "name": "traydstar-mcp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "MCP server exposing the TraydStar barter marketplace as agent tools",
   "type": "module",
   "bin": {

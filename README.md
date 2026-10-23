@@ -98,7 +98,7 @@ Note: confirming a Handshake whose fee is covered (`cover_handshake_fee`) needs 
 
 | Tool | Scope | Server | API call |
 |---|---|---|---|
-| `search_listings` | public | local, hosted | `GET /api/v1/listings` |
+| `search_listings` | public | local, hosted | `GET /api/v1/listings` — filters: q, category, subcategory, type, kind, listed_by, ships, city, limit, offset; `mine` and `saved` need the read scope |
 | `get_listing` | public | local, hosted | `GET /api/v1/listings/{id}` |
 | `whoami` | read | local, hosted | `GET /api/v1/me` |
 | `create_listing` | propose | local, hosted | `POST /api/v1/listings` |
@@ -116,7 +116,7 @@ Note: confirming a Handshake whose fee is covered (`cover_handshake_fee`) needs 
 | `counter_proposal` | trade | local, hosted | `POST /api/v1/proposals/{id}/counter` |
 | `send_message` | propose | local, hosted | `POST /api/v1/messages` |
 | `list_conversations` | read | local, hosted | `GET /api/v1/messages` |
-| `read_conversation` | read | local, hosted | `GET /api/v1/messages/{userId}` |
+| `read_conversation` | read | local, hosted | `GET /api/v1/messages/{userId}` — `after`, `limit` (max 200), `mark_read=false` to peek |
 | `list_handshakes` | read | local, hosted | `GET /api/v1/handshakes` |
 | `get_handshake` | read | local, hosted | `GET /api/v1/handshakes/{id}` |
 | `cover_handshake_fee` | pay | local, hosted | `POST /api/v1/handshakes/{id}/cover` |

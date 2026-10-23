@@ -55,20 +55,30 @@ async function api(method, path, body) {
   return { content: [{ type: "text", text: `${DATA_NOTE}\n${JSON.stringify(data, null, 2)}` }] };
 }
 
-const server = new McpServer({ name: "traydstar", version: "0.1.1" });
+const server = new McpServer({ name: "traydstar", version: "0.1.2" });
 
 server.registerTool("search_listings", {
   description: "Search active barter listings on TraydStar. Public; returns goods and services people want to trade (no cash — barter only, matched by value).",
   inputSchema: {
     q: z.string().optional().describe("Text search over title and description"),
     category: z.string().optional(),
+    subcategory: z.string().optional().describe("Only for categories that have subcategories, e.g. Lenses under Cameras & Photo"),
     type: z.enum(["GOOD", "SERVICE", "BOTH"]).optional(),
+    kind: z.enum(["offer", "wanted"]).optional().describe("offer = things on offer; wanted = things someone is looking for"),
+    listed_by: z.enum(["agent", "person"]).optional().describe("Only listings created by an agent acting for a member, or only by the member directly"),
+    ships: z.boolean().optional().describe("true = only listings whose owner will ship"),
+    city: z.string().optional().describe("Listings whose location contains this text"),
+    mine: z.boolean().optional().describe("true = your own listings instead, any status except removed (needs a key with the read scope)"),
+    saved: z.boolean().optional().describe("true = your saved listings (needs a key with the read scope)"),
     limit: z.number().int().min(1).max(100).optional(),
     offset: z.number().int().min(0).optional(),
   },
 }, async (args) => {
   const params = new URLSearchParams();
-  for (const [k, v] of Object.entries(args)) if (v !== undefined) params.set(k, String(v));
+  for (const [k, v] of Object.entries(args)) {
+    if (v === undefined || v === false) continue; // the API takes ships/mine/saved as the literal "true"
+    params.set(k, String(v));
+  }
   return api("GET", `/api/v1/listings?${params}`);
 });
 
@@ -78,13 +88,18 @@ server.registerTool("get_listing", {
 }, async ({ listing_id }) => api("GET", `/api/v1/listings/${listing_id}`));
 
 server.registerTool("create_listing", {
-  description: "Create a barter listing on behalf of the account (scope: propose). Describe a good or service to offer and optionally what's wanted in return. Note: image uploads are not supported via API; listings created here use a placeholder image.",
+  description: "Create a barter listing on behalf of the account (scope: propose). Describe a good or service to offer and optionally what's wanted in return. Photos can't be attached from this server: the API only accepts image URLs already uploaded to TraydStar storage, so the listing is created without images and the owner adds photos on the website.",
   inputSchema: {
     title: z.string().min(3).max(100),
     description: z.string().min(10).max(5000),
     type: z.enum(["GOOD", "SERVICE", "BOTH"]),
     category: z.string().min(1).max(50),
+    subcategory: z.string().max(50).optional().describe("Only for categories that have subcategories"),
+    kind: z.enum(["offer", "wanted"]).optional().describe("offer (default) or wanted"),
     condition: z.enum(["NEW", "LIKE_NEW", "GOOD", "FAIR", "POOR"]).optional(),
+    pickup: z.boolean().optional().describe("Local pickup possible (default true)"),
+    ships: z.boolean().optional().describe("Owner will ship (default false)"),
+    location_city: z.string().max(100).optional(),
     want_tags: z.array(z.string().min(1).max(40)).max(10).optional(),
     want_description: z.string().max(2000).optional(),
     stated_value_usd: z.number().positive().optional().describe("Your estimate of the item/service value in USD"),
@@ -154,9 +169,17 @@ server.registerTool("read_conversation", {
   inputSchema: {
     user_id: z.string().uuid(),
     after: z.string().optional().describe("ISO timestamp; only messages after it"),
+    limit: z.number().int().min(1).max(200).optional().describe("Max messages to return (API default 100)"),
+    mark_read: z.boolean().optional().describe("false = read without marking the messages as read (default true)"),
   },
-}, async ({ user_id, after }) =>
-  api("GET", `/api/v1/messages/${user_id}${after ? `?after=${encodeURIComponent(after)}` : ""}`));
+}, async ({ user_id, after, limit, mark_read }) => {
+  const params = new URLSearchParams();
+  if (after) params.set("after", after);
+  if (limit !== undefined) params.set("limit", String(limit));
+  if (mark_read !== undefined) params.set("mark_read", String(mark_read));
+  const qs = params.toString();
+  return api("GET", `/api/v1/messages/${user_id}${qs ? `?${qs}` : ""}`);
+});
 
 server.registerTool("list_handshakes", {
   description: "List the account's handshakes with payment and completion status (scope: read).",
